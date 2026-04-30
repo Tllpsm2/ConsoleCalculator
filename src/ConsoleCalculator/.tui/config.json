@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "Theme": "DarkTheme",
+  "Themes": [
+    {
+      "DarkTheme": {
+        "Schemes": [
+          {
+            "AppBackground": {
+              "Normal": { "Foreground": "Gray", "Background": "Black" },
+              "Focus": { "Foreground": "White", "Background": "Black" }
+            }
+          },
+          {
+            "NavigationTabs": {
+              "Normal": { "Foreground": "Gray", "Background": "Black" },
+              "Focus": { "Foreground": "White", "Background": "DarkSlateGray" },
+              "HotNormal": {
+                "Foreground": "DodgerBlue",
+                "Background": "Black"
+              },
+              "HotFocus": {
+                "Foreground": "DodgerBlue",
+                "Background": "DarkSlateGray"
+              }
+            }
+          },
+          {
+            "CalculatorFrame": {
+              "Normal": { "Foreground": "White", "Background": "DarkSlateGray" }
+            }
+          },
+          {
+            "MainDisplay": {
+              "Normal": { "Foreground": "Cyan", "Background": "MidnightBlue" }
+            }
+          },
+          {
+            "OperatorButton": {
+              "Normal": { "Foreground": "White", "Background": "DarkOrange" },
+              "HotNormal": {
+                "Foreground": "White",
+                "Background": "DarkOrange"
+              },
+              "Focus": { "Foreground": "White", "Background": "Orange" },
+              "HotFocus": { "Foreground": "White", "Background": "Orange" }
+            }
+          },
+          {
+            "NumberButton": {
+              "Normal": { "Foreground": "White", "Background": "DarkGray" },
+              "HotNormal": { "Foreground": "White", "Background": "DarkGray" },
+              "Focus": { "Foreground": "Black", "Background": "Gray" },
+              "HotFocus": { "Foreground": "Black", "Background": "Gray" }
+            }
+          },
+          {
+            "EqualButton": {
+              "Normal": { "Foreground": "White", "Background": "SeaGreen" },
+              "HotNormal": { "Foreground": "White", "Background": "SeaGreen" },
+              "Focus": {
+                "Foreground": "White",
+                "Background": "MediumSeaGreen"
+              },
+              "HotFocus": {
+                "Foreground": "White",
+                "Background": "MediumSeaGreen"
+              }
+            }
+          },
+          {
+            "ActionButton": {
+              "Normal": { "Foreground": "White", "Background": "IndianRed" },
+              "HotNormal": { "Foreground": "White", "Background": "IndianRed" },
+              "Focus": { "Foreground": "White", "Background": "LightCoral" },
+              "HotFocus": { "Foreground": "White", "Background": "LightCoral" }
+            }
+          },
+          {
+            "StatusBar": {
+              "Normal": { "Foreground": "White", "Background": "DarkSlateGray" },
+              "HotNormal": { "Foreground": "Yellow", "Background": "DarkSlateGray"}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
