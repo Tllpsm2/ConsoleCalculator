@@ -41,7 +41,7 @@ public class ConfigMainView : Window
         Shortcut[] shortcuts =
         [
             new Shortcut { Title = "_Quit", Key = Key.Esc, Action = () => App?.RequestStop() },
-            new Shortcut { Title = "_Next Tab", Key = Key.Tab}
+            new Shortcut { Title = "_Next Tab", Key = Key.Tab, Action = () => App?.Navigation?.AdvanceFocus(NavigationDirection.Forward, null) }
         ];
 
         var statusBar = new StatusBar(shortcuts)
