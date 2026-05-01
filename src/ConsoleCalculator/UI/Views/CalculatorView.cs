@@ -1,5 +1,7 @@
 using ConsoleCalculator.Core.Engine;
 using ConsoleCalculator.UI.Styling;
+using Terminal.Gui.Drivers;
+using Terminal.Gui.Input;
 using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
 
@@ -154,8 +156,6 @@ public class CalculatorView : View
         _calculatorContainer.Add(keypadContainer);
     }
 
-
-
     private void UpdateDisplay()
     {
         _expressionDisplay.Text = _calculatorEngine.State.CurrentExpression;
@@ -187,4 +187,19 @@ public class CalculatorView : View
         _calculatorEngine.Evaluate();
         UpdateDisplay();
     }
+
+    protected override bool OnKeyDown(Key key)
+    {
+        char p = (char)key.KeyCode;
+
+        if (char.IsDigit(p) || "+-.,()".Contains(p)) { OnButtonClicked(p.ToString()); return true; }
+        if ("/:÷".Contains(p)) { OnButtonClicked("÷"); return true; }
+        if ("*xX".Contains(p)) { OnButtonClicked("×"); return true; }
+        if (key == Key.Enter) { OnEqualClicked(); return true; }
+        if (key == Key.Backspace) { OnDelClicked(); return true; }
+        if (key == Key.C) { OnAcClicked(); return true; }
+
+        return base.OnKeyDown(key);
+    }
+
 }
