@@ -4,6 +4,7 @@
   "Themes": [
     {
       "DarkTheme": {
+        "Button.DefaultShadow": "None",
         "Schemes": [
           {
             "AppBackground": {
@@ -32,7 +33,12 @@
           },
           {
             "MainDisplay": {
-              "Normal": { "Foreground": "Cyan", "Background": "MidnightBlue" }
+              "Normal": { "Foreground": "Cyan", "Background": "MidnightBlue"}
+            }
+          },
+          {
+            "ExpressionDisplay": {
+              "Normal": { "Foreground": "DarkCyan", "Background": "MidnightBlue", "Style": "italic" }
             }
           },
           {

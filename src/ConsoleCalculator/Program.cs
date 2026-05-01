@@ -1,6 +1,6 @@
-using Terminal.Gui.Configuration;
-using ConsoleCalculator.Views;
+using ConsoleCalculator.UI.Views;
 using Terminal.Gui.App;
+using Terminal.Gui.Configuration;
 
 ConfigurationManager.ThrowOnJsonErrors = true;
 ConfigurationManager.Enable(ConfigLocations.All);
