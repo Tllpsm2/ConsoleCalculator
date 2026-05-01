@@ -1,4 +1,4 @@
-namespace ConsoleCalculator.Models;
+namespace ConsoleCalculator.Core.Models;
 
 public class CalculatorState
 {
