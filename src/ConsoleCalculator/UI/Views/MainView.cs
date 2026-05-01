@@ -1,10 +1,11 @@
+using ConsoleCalculator.Core.Engine;
+using ConsoleCalculator.UI.Styling;
+using ConsoleCalculator.Views;
 using Terminal.Gui.Input;
 using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
-using ConsoleCalculator.Services;
-using Terminal.Gui.App;
 
-namespace ConsoleCalculator.Views;
+namespace ConsoleCalculator.UI.Views;
 
 public class ConfigMainView : Window
 {
@@ -26,10 +27,11 @@ public class ConfigMainView : Window
         {
             SchemeName = ThemeNames.NavigationTabs,
             Width = Dim.Fill(),
-            Height = Dim.Fill() - 1
+            Height = Dim.Fill() - 1 // Leave space for the status bar
         };
 
         _tabContainer.Add(_calculatorTab, _historyTab, _settingsTab);
+        _calculatorTab.Add(new CalculatorView(new CalculatorEngine()));
 
         Add(_tabContainer);
 
