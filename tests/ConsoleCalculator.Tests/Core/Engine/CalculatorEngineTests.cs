@@ -1,7 +1,7 @@
-﻿using ConsoleCalculator.Services;
+using ConsoleCalculator.Core.Engine;
 using FluentAssertions;
 
-namespace ConsoleCalculator.Tests;
+namespace ConsoleCalculator.Tests.Core.Engine;
 
 public class CalculatorEngineTests
 {
@@ -11,19 +11,19 @@ public class CalculatorEngineTests
     [InlineData("-10*5+2", "-48")]
     [InlineData("2 +  2", "4")]
     [InlineData("invalid +* -2^2", "Error")]
-    [InlineData("1/0", "Error")]         
+    [InlineData("1/0", "Error")]
     [InlineData("0/0", "Error")]
-    [InlineData("", "")]                 
+    [InlineData("", "")]
     public void Evaluate_MultipleScenarios_ReturnsExpectedResult(string input, string expectedResult)
     {
         // Arrange
         var engine = new CalculatorEngine(input);
-        
+
         // Act
         engine.Evaluate();
-        
+
         // Assert
-        engine.State.CurrentExpression.Should().Be(expectedResult);
+        engine.State.CurrentInput.Should().Be(expectedResult);
     }
 
     [Fact]
@@ -40,20 +40,20 @@ public class CalculatorEngineTests
         engine.Evaluate();
 
         // Assert
-        engine.State.CurrentExpression.Should().Be("3");
+        engine.State.CurrentInput.Should().Be("3");
     }
-    
+
     [Fact]
-    public void ClearAll_WhenCalled_ResetsState()
+    public void AllClear_WhenCalled_ResetsState()
     {
         // Arrange
         var engine = new CalculatorEngine("1+1");
-        
+
         // Act
-        engine.ClearAll();
-        
+        engine.AllClear();
+
         // Assert
-        engine.State.CurrentExpression.Should().BeEmpty();
+        engine.State.CurrentInput.Should().Be(" ");
     }
 
     [Fact]
@@ -61,11 +61,11 @@ public class CalculatorEngineTests
     {
         // Arrange
         var engine = new CalculatorEngine("Error");
-        
+
         // Act
         engine.ProcessInput("1");
-        
+
         // Assert
-        engine.State.CurrentExpression.Should().Be("1");
+        engine.State.CurrentInput.Should().Be("1");
     }
 }
