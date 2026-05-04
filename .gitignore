@@ -92,3 +92,8 @@ artifacts/
 
 # Custom ignore for this project
 temp/
+
+# JetBrains / Rider
+.idea/
+qodana.yaml
+*.DotSettings.user
