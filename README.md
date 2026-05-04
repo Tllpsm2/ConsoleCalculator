@@ -1,35 +1,48 @@
 # Console Calculator Pro
 
-This is an interactive console-based calculator application built as part of [The C# Academy](https://www.thecsharpacademy.com/project/11/calculator) curriculum. The primary goal of this project is to practice and level up my skills in building C# console applications, but with a modern, highly interactive twist.
+An interactive console-based calculator built as part of [The C# Academy](https://www.thecsharpacademy.com/) curriculum. The goal is to practice C# console application development.
+
+![Console Calculator Pro running in the terminal](assets/screenshot.jpg)
+
+---
 
 ## Features
 
-- **Interactive Console Interface:** This isn't your standard text-prompt calculator. By utilizing the `Terminal.Gui` library, the console features a fully interactive, mouse-friendly interface that looks and feels like a real desktop calculator right inside your terminal.
-- **Advanced Math Evaluation:** Powered by `NCalc`, the calculator goes beyond simple step-by-step math. It natively supports complex expressions, parentheses, and operator precedence (e.g., `(10 + 5) * 2 / 4`).
-- **Clean Architecture & Reliable Logic:** The project separates the UI from the business logic (Service-Driven approach). The core calculator engine is covered by automated tests using **xUnit** and **FluentAssertions** to ensure that all math operations return accurate results and edge cases (like division by zero) are handled gracefully.
-- **Upcoming Feature: AI Voice Integration:** As part of the C# Academy's _AI Challenge_, this project is being prepared to support voice commands! In future updates, we'll be integrating **Azure's Language Services** so users can speak their calculations instead of typing them.
+- **Interactive TUI:** Powered by `Terminal.Gui`, the application renders a fully interactive, mouse-friendly interface directly in the terminal — tabs, styled buttons, and a dual-line display included.
+- **Complex expression evaluation:** Powered by `NCalc`, supports operator precedence, parentheses, and localized operators (e.g. `19×(38÷4)+2`). Results are formatted to up to 8 decimal places.
+- **Keyboard support:** Full keyboard input — digits, operators, `Enter` to evaluate, `Backspace` to delete, and `C` to clear.
+- **Graceful error handling:** Invalid expressions and undefined results (e.g. division by zero) produce an `Error` state without crashing.
+- **Clean architecture:** UI, engine, and evaluation logic are separated into distinct layers. `CalculatorEngine` depends on `IBasicService`, injected via constructor — making the core fully testable without touching the UI.
+- **Unit tested:** Core behaviour is covered by **xUnit** + **FluentAssertions** tests across both `BasicService` and `CalculatorEngine`.
+- **Planned — AI Voice Input:** As part of the C# Academy's _AI Challenge_, future versions will integrate Azure Language Services to accept spoken calculations.
 
-## Technologies Used
+---
 
-- **C# 12 / .NET 8:** The core framework.
-- **[Terminal.Gui](https://github.com/gui-cs/Terminal.Gui):** For building the rich, event-driven console UI.
-- **[NCalcSync](https://github.com/ncalc/ncalc):** For parsing and evaluating complex mathematical expressions.
-- **xUnit & [FluentAssertions](https://fluentassertions.com/):** For creating readable and robust unit tests.
-- **Azure Cognitive Services (Planned):** To tackle the AI speech-to-text challenge.
+## Tech Stack
+
+|                       |                                                           |
+| --------------------- | --------------------------------------------------------- |
+| **Runtime**           | C# / .NET 10                                              |
+| **TUI framework**     | [Terminal.Gui](https://github.com/gui-cs/Terminal.Gui)    |
+| **Expression parser** | [NCalcSync](https://github.com/ncalc/ncalc)               |
+| **Testing**           | xUnit + [FluentAssertions](https://fluentassertions.com/) |
+| **Planned**           | Azure Cognitive Services (speech-to-text)                 |
+
+---
 
 ## How to Run
 
-1. Clone this repository to your local machine.
-2. Open a terminal and navigate to the root folder of the project.
-3. Restore the packages by running:
-   ```bash
-   dotnet restore
-   ```
-4. Start the application:
-   ```bash
-   dotnet run --project ConsoleCalculator
-   ```
-5. To run the test suite:
-   ```bash
-   dotnet test
-   ```
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/ConsoleCalculator.git
+cd ConsoleCalculator
+
+# 2. Restore dependencies
+dotnet restore
+
+# 3. Run the application
+dotnet run --project src/ConsoleCalculator
+
+# 4. Run the test suite
+dotnet test
+```
