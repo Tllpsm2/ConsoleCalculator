@@ -1,15 +1,22 @@
+using ConsoleCalculator.Core.Interfaces;
 using NCalc;
 
 namespace ConsoleCalculator.Core.Engine.Operations;
 
-public static class BasicService
+public class BasicService : IBasicService
 {
-    public static double EvaluateComplex(string expression)
+    public double EvaluateComplex(string expression)
     {
         try
         {
-            return Convert.ToDouble(new
-            Expression(Normalize(expression)).Evaluate());
+            var raw = new Expression(Normalize(expression)).Evaluate();
+
+            return raw switch
+            {
+                int i => i,
+                double d => d,
+                _ => throw new InvalidOperationException("Unexpected result type")
+            };
         }
         catch (Exception ex)
         {
@@ -17,9 +24,11 @@ public static class BasicService
         }
     }
 
-    private static string Normalize(string expression) => expression
-        .Replace("÷", "/")
-        .Replace("×", "*")
-        .Replace(",", ".");
+    private static string Normalize(string expression)
+    {
+        return expression
+            .Replace('÷', '/')
+            .Replace('×', '*')
+            .Replace(',', '.');
+    }
 }
-
