@@ -1,22 +1,15 @@
 using ConsoleCalculator.Core.Engine;
 using ConsoleCalculator.UI.Styling;
-using Terminal.Gui.Drivers;
 using Terminal.Gui.Input;
 using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
 
-namespace ConsoleCalculator.Views;
+namespace ConsoleCalculator.UI.Views;
 
 public class CalculatorView : View
 {
-    private readonly CalculatorEngine _calculatorEngine;
-
-    private readonly View _calculatorContainer;
-    private Label _expressionDisplay = null!;
-    private Label _mainDisplay = null!;
-
     private const int Columns = 4;
-    private const int ButtonWidth = 9;  // must be > 7
+    private const int ButtonWidth = 9; // must be > 7
     private const int ButtonHeight = 3;
     private const int GapX = 1;
     private const int GapY = 1;
@@ -24,6 +17,15 @@ public class CalculatorView : View
 
     private const int KeypadWidth = Columns * ButtonWidth + (Columns - 1) * GapX;
     private const int KeypadHeight = Rows * ButtonHeight + (Rows - 1) * GapY;
+
+    private const string DeleteButtonText = "DEL";
+    private const string ClearButtonText = "AC";
+    private const string EqualButtonText = "=";
+
+    private readonly View _calculatorContainer;
+    private readonly CalculatorEngine _calculatorEngine;
+    private Label _expressionDisplay = null!;
+    private Label _mainDisplay = null!;
 
     public CalculatorView(CalculatorEngine calculatorEngine)
     {
@@ -39,7 +41,7 @@ public class CalculatorView : View
             Width = KeypadWidth,
             Height = Dim.Auto(),
             X = Pos.Center(),
-            Y = Pos.Center()
+            Y = Pos.Center(),
         };
 
         Add(_calculatorContainer);
@@ -61,7 +63,7 @@ public class CalculatorView : View
             TextAlignment = Alignment.End,
             Text = _calculatorEngine.State.CurrentExpression,
 
-            SchemeName = ThemeNames.ExpressionDisplay
+            SchemeName = ThemeNames.ExpressionDisplay,
         };
 
         _mainDisplay = new Label // current input or result
@@ -73,7 +75,7 @@ public class CalculatorView : View
             TextAlignment = Alignment.End,
             Text = _calculatorEngine.State.CurrentInput,
 
-            SchemeName = ThemeNames.MainDisplay
+            SchemeName = ThemeNames.MainDisplay,
         };
 
         _calculatorContainer.Add(_expressionDisplay, _mainDisplay);
@@ -81,95 +83,103 @@ public class CalculatorView : View
 
     private void ConfigCalcButtons()
     {
-        Button[] basicButtons =
+        var keypadContainer = CreateKeypadContainer();
+
+        (string Text, string SchemeName)[] buttonSpecs =
         [
-        new Button { Text = "(", SchemeName = ThemeNames.OperatorButton },
-        new Button { Text = ")", SchemeName = ThemeNames.OperatorButton },
-        new Button { Text = "DEL", SchemeName = ThemeNames.ActionButton },
-        new Button { Text = "AC", SchemeName = ThemeNames.ActionButton },
+            ("(", ThemeNames.OperatorButton),
+            (")", ThemeNames.OperatorButton),
+            (DeleteButtonText, ThemeNames.ActionButton),
+            (ClearButtonText, ThemeNames.ActionButton),
 
-        new Button { Text = "7", SchemeName = ThemeNames.NumberButton, },
-        new Button { Text = "8", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "9", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "÷", SchemeName = ThemeNames.OperatorButton },
+            ("7", ThemeNames.NumberButton),
+            ("8", ThemeNames.NumberButton),
+            ("9", ThemeNames.NumberButton),
+            ("÷", ThemeNames.OperatorButton),
 
-        new Button { Text = "4", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "5", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "6", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "×", SchemeName = ThemeNames.OperatorButton },
+            ("4", ThemeNames.NumberButton),
+            ("5", ThemeNames.NumberButton),
+            ("6", ThemeNames.NumberButton),
+            ("×", ThemeNames.OperatorButton),
 
-        new Button { Text = "1", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "2", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "3", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = "-", SchemeName = ThemeNames.OperatorButton },
+            ("1", ThemeNames.NumberButton),
+            ("2", ThemeNames.NumberButton),
+            ("3", ThemeNames.NumberButton),
+            ("-", ThemeNames.OperatorButton),
 
-        new Button { Text = "0", SchemeName = ThemeNames.NumberButton },
-        new Button { Text = ".", SchemeName = ThemeNames.ActionButton },
-        new Button { Text = "=", SchemeName = ThemeNames.EqualButton },
-        new Button { Text = "+", SchemeName = ThemeNames.OperatorButton }
+            ("0", ThemeNames.NumberButton),
+            (".", ThemeNames.ActionButton),
+            (EqualButtonText, ThemeNames.EqualButton),
+            ("+", ThemeNames.OperatorButton),
         ];
 
-        var keypadContainer = new View
+        for (var index = 0; index < buttonSpecs.Length; index++)
+        {
+            var button = CreateCalculatorButton(buttonSpecs[index], index);
+            keypadContainer.Add(button);
+        }
+
+        _calculatorContainer.Add(keypadContainer);
+    }
+
+    private View CreateKeypadContainer()
+    {
+        return new View
         {
             Width = KeypadWidth,
             Height = KeypadHeight,
             X = 0,
-            Y = Pos.Bottom(_mainDisplay) + 1
+            Y = Pos.Bottom(_mainDisplay) + 1,
+        };
+    }
+
+    private Button CreateCalculatorButton((string Text, string SchemeName) spec, int index)
+    {
+        var row = index / Columns;
+        var column = index % Columns;
+
+        var button = new Button
+        {
+            Text = spec.Text,
+            SchemeName = spec.SchemeName,
+            X = column * (ButtonWidth + GapX),
+            Y = row * (ButtonHeight + GapY),
+            Width = ButtonWidth,
+            Height = ButtonHeight,
+            TextAlignment = Alignment.Center,
+            VerticalTextAlignment = Alignment.Center,
+            NoDecorations = true,
         };
 
-        for (int i = 0; i < basicButtons.Length; i++)
+        button.Accepted += spec.Text switch
         {
-            int row = i / Columns;
-            int col = i % Columns;
+            DeleteButtonText => (_, _) => OnDelClicked(),
+            ClearButtonText => (_, _) => OnAcClicked(),
+            EqualButtonText => (_, _) => OnEqualClicked(),
+            _ => (_, _) => OnButtonClicked(spec.Text),
+        };
 
-            basicButtons[i].X = col * (ButtonWidth + GapX);
-            basicButtons[i].Y = row * (ButtonHeight + GapY);
-            basicButtons[i].Width = ButtonWidth;
-            basicButtons[i].Height = ButtonHeight;
-
-            basicButtons[i].TextAlignment = Alignment.Center;
-            basicButtons[i].VerticalTextAlignment = Alignment.Center;
-            basicButtons[i].NoDecorations = true;
-
-            string buttonText = basicButtons[i].Text.ToString();
-
-            if (buttonText == "DEL")
-            {
-                basicButtons[i].Accepted += (s, e) => OnDelClicked();
-            }
-            else if (buttonText == "AC")
-            {
-                basicButtons[i].Accepted += (s, e) => OnAcClicked();
-            }
-            else if (buttonText == "=")
-            {
-                basicButtons[i].Accepted += (s, e) => OnEqualClicked();
-            }
-            else
-            {
-                basicButtons[i].Accepted += (s, e) => OnButtonClicked(buttonText);
-            }
-
-            keypadContainer.Add(basicButtons[i]);
-        }
-
-        _calculatorContainer.Add(keypadContainer);
+        return button;
     }
 
     private void UpdateDisplay()
     {
         _expressionDisplay.Text = _calculatorEngine.State.CurrentExpression;
 
-        _mainDisplay.Text = _calculatorEngine.State.CurrentInput;
+        _mainDisplay.Text = string.IsNullOrWhiteSpace(_calculatorEngine.State.CurrentInput)
+            ? "0"
+            : _calculatorEngine.State.CurrentInput;
 
         _expressionDisplay.SetNeedsDraw();
         _mainDisplay.SetNeedsDraw();
     }
+
     private void OnButtonClicked(string buttonText)
     {
         _calculatorEngine.ProcessInput(buttonText);
         UpdateDisplay();
     }
+
     private void OnDelClicked()
     {
         _calculatorEngine.DeleteLast();
@@ -190,16 +200,44 @@ public class CalculatorView : View
 
     protected override bool OnKeyDown(Key key)
     {
-        char p = (char)key.KeyCode;
+        var p = (char)key.KeyCode;
 
-        if (char.IsDigit(p) || "+-.,()".Contains(p)) { OnButtonClicked(p.ToString()); return true; }
-        if ("/:÷".Contains(p)) { OnButtonClicked("÷"); return true; }
-        if ("*xX".Contains(p)) { OnButtonClicked("×"); return true; }
-        if (key == Key.Enter) { OnEqualClicked(); return true; }
-        if (key == Key.Backspace) { OnDelClicked(); return true; }
-        if (key == Key.C) { OnAcClicked(); return true; }
+        if (char.IsDigit(p) || "+-.,()".Contains(p, StringComparison.Ordinal))
+        {
+            OnButtonClicked(p.ToString());
+            return true;
+        }
+
+        if ("/:÷".Contains(p, StringComparison.Ordinal))
+        {
+            OnButtonClicked("÷");
+            return true;
+        }
+
+        if ("*xX".Contains(p, StringComparison.Ordinal))
+        {
+            OnButtonClicked("×");
+            return true;
+        }
+
+        if (key == Key.Enter)
+        {
+            OnEqualClicked();
+            return true;
+        }
+
+        if (key == Key.Backspace)
+        {
+            OnDelClicked();
+            return true;
+        }
+
+        if (key == Key.C)
+        {
+            OnAcClicked();
+            return true;
+        }
 
         return base.OnKeyDown(key);
     }
-
 }

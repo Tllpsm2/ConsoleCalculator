@@ -1,39 +1,33 @@
 using ConsoleCalculator.Core.Engine;
 using ConsoleCalculator.UI.Styling;
-using ConsoleCalculator.Views;
 using Terminal.Gui.Input;
 using Terminal.Gui.ViewBase;
 using Terminal.Gui.Views;
 
 namespace ConsoleCalculator.UI.Views;
 
-public class ConfigMainView : Window
+public class MainView : Window
 {
-    private readonly Tabs _tabContainer;
-    private readonly Tabs _calculatorTab;
-    private readonly Tabs _historyTab;
-    private readonly Tabs _settingsTab;
-
-    public ConfigMainView()
+    public MainView(CalculatorEngine calculatorEngine)
     {
         Title = "Console Calculator";
         SchemeName = ThemeNames.AppBackground;
 
-        _calculatorTab = new Tabs { Title = "Calculator", SchemeName = ThemeNames.CalculatorFrame };
-        _historyTab = new Tabs { Title = "History", SchemeName = ThemeNames.CalculatorFrame };
-        _settingsTab = new Tabs { Title = "Settings", SchemeName = ThemeNames.CalculatorFrame };
+        var calculatorTab = new Tabs { Title = "Calculator", SchemeName = ThemeNames.CalculatorFrame };
+        var historyTab = new Tabs { Title = "History", SchemeName = ThemeNames.CalculatorFrame };
+        var settingsTab = new Tabs { Title = "Settings", SchemeName = ThemeNames.CalculatorFrame };
 
-        _tabContainer = new Tabs
+        var tabContainer = new Tabs
         {
             SchemeName = ThemeNames.NavigationTabs,
             Width = Dim.Fill(),
-            Height = Dim.Fill() - 1 // Leave space for the status bar
+            Height = Dim.Fill() - 1, // Leave space for the status bar
         };
 
-        _tabContainer.Add(_calculatorTab, _historyTab, _settingsTab);
-        _calculatorTab.Add(new CalculatorView(new CalculatorEngine()));
+        tabContainer.Add(calculatorTab, historyTab, settingsTab);
+        calculatorTab.Add(new CalculatorView(calculatorEngine));
 
-        Add(_tabContainer);
+        Add(tabContainer);
 
         SetupStatusBar();
     }
@@ -42,16 +36,22 @@ public class ConfigMainView : Window
     {
         Shortcut[] shortcuts =
         [
-            new Shortcut { Title = "_Quit", Key = Key.Esc, Action = () => App?.RequestStop() },
-            new Shortcut { Title = "_Next Tab", Key = Key.Tab, Action = () => App?.Navigation?.AdvanceFocus(NavigationDirection.Forward, null) }
+            new()
+            {
+                Title = "_Quit",
+                Key = Key.Esc,
+                Action = () => App?.RequestStop(),
+            },
+            new()
+            {
+                Title = "_Next Tab",
+                Key = Key.Tab,
+                Action = () => App?.Navigation?.AdvanceFocus(NavigationDirection.Forward, behavior: null),
+            },
         ];
 
-        var statusBar = new StatusBar(shortcuts)
-        {
-            SchemeName = ThemeNames.StatusBar
-        };
+        var statusBar = new StatusBar(shortcuts) { SchemeName = ThemeNames.StatusBar };
 
         Add(statusBar);
     }
-
 }
